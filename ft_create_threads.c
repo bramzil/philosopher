@@ -43,6 +43,7 @@ int	ft_create_threads(par_t *par)
 		    return (printf("thread_creation failure!\n"), -1);
 		if (pthread_detach(t))
 			return (printf("thread_detach failure!\n"), -1);
+        usleep(100);
 	}
 	return (0);
 }

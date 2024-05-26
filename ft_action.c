@@ -28,10 +28,7 @@ void ft_free_par(par_t *par)
 	pthread_mutex_destroy(par->prnt_mtx);
 	free(par->prnt_mtx);
 	while (++i < par->ph_nb)
-	{
-		pthread_mutex_lock(&(par->forks[i]));
 		pthread_mutex_destroy(&(par->forks[i]));
-	}
 	free(par->forks);
 }
 
@@ -66,7 +63,8 @@ int	ft_sleeping(par_t *par, long *ref, int id)
 	// if ((*ref + par->t_die) < (stmp.tv_usec / 1000))
 	// 	return(-1);
 	gettimeofday(&stmp, NULL);
-	if (ft_putevent(par, "sleeping\n", (stmp.tv_usec / 1000), id))
+	if (ft_die(par, id, 0) || ft_putevent(par, "sleeping\n", \
+		(stmp.tv_sec), id))
 		return (-1);
 	usleep(par->t_slp * 1000);
 	return (0);
@@ -80,18 +78,20 @@ int	ft_eating(par_t *par, long *ref, int id)
 	// gettimeofday(&stmp, NULL);
 	// if ((*ref + par->t_die) < (stmp.tv_usec / 1000))
 	// 	return(-1);
-	if (ft_lock_mutex(par, par->ph_nb, id))
+	if (ft_die(par, id, 0) || ft_lock_mutex(par, par->ph_nb, id))
 		return (-1);
 	gettimeofday(&stmp, NULL);
-	if (ft_putevent(par, "has take fork\n", (stmp.tv_usec / 1000), id))
+	if (ft_die(par, id, 0) || ft_putevent(par, "has take fork\n", \
+		(stmp.tv_sec), id))
 		return (-1);
 	gettimeofday(&stmp, NULL);
-	if (ft_putevent(par, "eating\n", (stmp.tv_usec / 1000), id))
+	if (ft_die(par, id, 0) || ft_putevent(par, "eating\n", \
+		(stmp.tv_sec), id))
 		return (-1);
 	usleep(par->t_teat * 1000);
 	gettimeofday(&stmp, NULL);
-	*ref = (stmp.tv_usec / 1000);
-	if (ft_unlock_mutex(par, par->ph_nb, id))
+	*ref = (stmp.tv_sec);
+	if (ft_die(par, id, 0) || ft_unlock_mutex(par, par->ph_nb, id))
 		return (-1);
 	return (0);
 }

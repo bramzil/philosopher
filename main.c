@@ -16,14 +16,15 @@ int main()
 {
 	par_t				par;
 
-	par.ph_nb = 40;
+
+	par.ph_nb = 4;
 	par.t_die	= 900;
 	par.t_slp = 200;
 	par.t_teat = 300;
 	if (ft_create_threads(&par))
 		return (-1);
 	while (1)
-		if (ft_die(&par, 0, 0) == par.ph_nb)
+		if (ft_die(&par, 0, 0))
 			break ;
 	ft_free_par(&par);
 	return (0);

@@ -26,7 +26,7 @@ int	ft_die(par_t *par, int id, int set)
 	if (set && (*(par->die) == 1))
 	{
 		gettimeofday(&stmp, NULL);
-		ft_putevent(par, "died\n", (stmp.tv_usec / 1000), id);
+		ft_putevent(par, "died\n", (stmp.tv_sec), id);
 	}
 	tmp = *(par->die);
 	if (pthread_mutex_unlock(par->die_mtx))

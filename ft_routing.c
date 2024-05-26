@@ -20,11 +20,12 @@ static void	ft_subroutine(par_t *par, int id)
 	
 	i = -1;
 	gettimeofday(&stmp, NULL);
-	stmp_ref = (stmp.tv_usec / 1000);
+	stmp_ref = (stmp.tv_sec);
 	while (!ft_die(par, id, 0) && ++i < 3)
 	{
 		gettimeofday(&stmp, NULL);
-		if (ft_putevent(par, "thinking\n", (stmp.tv_usec / 1000), id))
+		if (ft_die(par, id, 0) || ft_putevent(par, "thinking\n", \
+			(stmp.tv_sec), id))
 			break ;
 		if (ft_die(par, id, 0) || ft_eating(par, &stmp_ref, id))
 			break ;
