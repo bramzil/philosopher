@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:43:00 by bramzil           #+#    #+#             */
-/*   Updated: 2024/05/28 16:09:10 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/05/30 22:35:16 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,23 @@ static int	ft_get_id(void)
 {
 	static int				id;
 	int						tmp;
+	static pthread_mutex_t	mtx = PTHREAD_MUTEX_INITIALIZER;
 
+	if (pthread_mutex_lock(&mtx))
+		return (ft_puterr("fails to lock id mtx\n", 0));
 	tmp = id;
 	id += 1;
+	if (pthread_mutex_unlock(&mtx))
+		return (ft_puterr("fails to unlock id mtx\n", 0));
 	return (tmp);
 }
 
 long	ft_meal(par_t *par, long value, int id)
 {
 	long		tmp;
-
+	
+	if (ft_die(id, 0))
+		return (0);
 	if (pthread_mutex_lock(&(par->meals_mtx[id])))
 		return (ft_puterr("fails to lock meals mtx\n", id));
 	if (0 <= value)
