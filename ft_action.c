@@ -24,7 +24,7 @@ void ft_free_par(par_t *par)
 
 int	ft_puterr(char *msg, int id)
 {
-	static pthread_mutex_t	mtx = PTHREAD_MUTEX_INITIALIZER;
+	static pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
 	
 	if (pthread_mutex_lock(&mtx))
 		return (printf("thread: %d fails to lock prnt_mtxn\n", id));
@@ -48,42 +48,30 @@ int	ft_putevent(char *msg, long stmp, int id)
 
 int	ft_sleeping(par_t *par, long *ref, int id)
 {
-	struct timeval		stmp;
-
-	(void)ref;
-	// gettimeofday(&stmp, NULL);
-	// if ((*ref + par->t_die) < (stmp.tv_usec / 1000))
-	// 	return(-1);
-	gettimeofday(&stmp, NULL);
-	if (ft_die(id, 0) || ft_putevent("sleeping\n", \
-		(stmp.tv_sec), id))
+	if (((*ref + par->t_die) < ft_get_time()) || ft_die(id, 0) || \
+		ft_putevent("sleeping\n", ft_get_time(), id))
 		return (-1);
 	usleep(par->t_slp * 1000);
+	if ((*ref + par->t_die) < ft_get_time())
+		return (-1);
 	return (0);
 }
 
 int	ft_eating(par_t *par, long *ref, int id)
 {
-	struct timeval		stmp;
-	
-	(void)ref;
-	// gettimeofday(&stmp, NULL);
-	// if ((*ref + par->t_die) < (stmp.tv_usec / 1000))
-	// 	return(-1);
-	if (ft_die(id, 0) || ft_lock_mutex(par, par->ph_nb, id))
+	if (((*ref + par->t_die) < ft_get_time()) || ft_die(id, 0) || \
+		ft_lock_mutex(par, par->ph_nb, id))
 		return (-1);
-	gettimeofday(&stmp, NULL);
-	if (ft_die(id, 0) || ft_putevent("has take fork\n", \
-		(stmp.tv_sec), id))
+	if (((*ref + par->t_die) < ft_get_time()) || ft_die(id, 0) || \
+		ft_putevent("has take fork\n", ft_get_time(), id))
 		return (-1);
-	gettimeofday(&stmp, NULL);
-	if (ft_die(id, 0) || ft_putevent("eating\n", \
-		(stmp.tv_sec), id))
+	if (((*ref + par->t_die) < ft_get_time()) || ft_die(id, 0) || \
+		ft_putevent("eating\n", ft_get_time(), id))
 		return (-1);
 	usleep(par->t_teat * 1000);
-	gettimeofday(&stmp, NULL);
-	*ref = (stmp.tv_sec);
-	if (ft_die(id, 0) || ft_unlock_mutex(par, par->ph_nb, id))
+	*ref = ft_get_time();
+	if (((*ref + par->t_die) < ft_get_time()) || ft_die(id, 0) || \
+		ft_unlock_mutex(par, par->ph_nb, id))
 		return (-1);
 	return (0);
 }

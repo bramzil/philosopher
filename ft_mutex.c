@@ -16,7 +16,6 @@ int	ft_die(int id, int set)
 {
 	int						tmp;
 	static int				die;
-	struct timeval			stmp;
 	static pthread_mutex_t	mtx = PTHREAD_MUTEX_INITIALIZER;
 	
 	if (pthread_mutex_lock(&mtx))
@@ -25,8 +24,7 @@ int	ft_die(int id, int set)
 	{
 		die += 1;
 		if (die == 1)
-			gettimeofday(&stmp, NULL), ft_putevent("died\n", \
-				(stmp.tv_sec), id);
+			ft_putevent("died\n", ft_get_time(), id);
 	}
 	tmp = die;
 	if (pthread_mutex_unlock(&mtx))
@@ -54,14 +52,11 @@ int ft_unlock_mutex(par_t *par, int ph_nb, int id)
 	return (0);
 }
 
-int ft_intiate_mutex(par_t *par)
+int ft_intiate_forks(par_t *par)
 {
 	int				i;
 
 	i = -1;
-	par->id_mtx = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
-	if (!par->id_mtx || pthread_mutex_init(par->id_mtx, NULL))
-		return (-1);
 	par->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * par->ph_nb);
 	if (!par->forks)
 		return (printf("failure in allocation forks!\n"), -1);

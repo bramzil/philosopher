@@ -16,8 +16,8 @@ int main()
 {
 	par_t				par;
 
-	par.ph_nb = 10;
-	par.t_die	= 900;
+	par.ph_nb = 3;
+	par.t_die	= 500;
 	par.t_slp = 200;
 	par.t_teat = 300;
 	if (ft_create_threads(&par))

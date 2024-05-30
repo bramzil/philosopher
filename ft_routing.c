@@ -12,38 +12,47 @@
 
 #include "philosopher.h"
 
-static void	ft_subroutine(par_t *par, int id)
+long	ft_get_time()
 {
-	int					i;
-	struct timeval		stmp;
-	long				stmp_ref;
-	
-	i = -1;
+	long			tmp;
+	struct timeval	stmp;
+
 	gettimeofday(&stmp, NULL);
-	stmp_ref = (stmp.tv_sec);
-	while (!ft_die(id, 0) && ++i < 3)
+	tmp = ((stmp.tv_sec * 1000) + (stmp.tv_usec / 1000));
+	return (tmp);
+}
+
+static int	ft_get_id(void)
+{
+	static int				id;
+	int						tmp;
+
+	tmp = id;
+	id += 1;
+	return (tmp);
+}
+
+void *ft_routing(void *par)
+{
+	int				i;
+	int				id;
+	par_t			*loc_par;
+	long			stmp_ref;
+
+	i = -1;
+	id = ft_get_id();
+	loc_par = ((par_t*)par);
+	stmp_ref = ft_get_time();
+	while (!ft_die(id, 0))
 	{
-		gettimeofday(&stmp, NULL);
 		if (ft_die(id, 0) || ft_putevent("thinking\n", \
-			(stmp.tv_sec), id))
+			ft_get_time(), id))
 			break ;
 		if (ft_die(id, 0) || ft_eating(par, &stmp_ref, id))
 			break ;
 		if (ft_die(id, 0) || ft_sleeping(par, &stmp_ref, id))
 			break ;
 	}
-}
-
-void *ft_routing(void *par)
-{
-	int				id;
-	par_t			*loc_par;
-
-	loc_par = ((par_t*)par);
-	pthread_mutex_lock(loc_par->id_mtx);
-	id = loc_par->id;
-    pthread_mutex_unlock(loc_par->id_mtx);
-	ft_subroutine(loc_par, id);
 	ft_die(id, 1);
 	return (0);
 }
