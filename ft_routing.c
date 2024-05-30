@@ -15,11 +15,14 @@
 long	ft_get_time()
 {
 	long			tmp;
+	static long		start;
 	struct timeval	stmp;
 
 	gettimeofday(&stmp, NULL);
 	tmp = ((stmp.tv_sec * 1000) + (stmp.tv_usec / 1000));
-	return (tmp);
+	if (!start)
+		start = tmp;
+	return (tmp - start);
 }
 
 static int	ft_get_id(void)
@@ -29,6 +32,20 @@ static int	ft_get_id(void)
 
 	tmp = id;
 	id += 1;
+	return (tmp);
+}
+
+long	ft_meal(par_t *par, long value, int id)
+{
+	long		tmp;
+
+	if (pthread_mutex_lock(&(par->meals_mtx[id])))
+		return (ft_puterr("fails to lock meals mtx\n", id));
+	if (0 <= value)
+		par->meals[id] = value;
+	tmp = par->meals[id];
+	if (pthread_mutex_unlock(&(par->meals_mtx[id])))
+		return (ft_puterr("fails to unlock meals mtx\n", id));
 	return (tmp);
 }
 
@@ -42,7 +59,7 @@ void *ft_routing(void *par)
 	i = -1;
 	id = ft_get_id();
 	loc_par = ((par_t*)par);
-	stmp_ref = ft_get_time();
+	ft_meal(loc_par, ft_get_time(), id);
 	while (!ft_die(id, 0))
 	{
 		if (ft_die(id, 0) || ft_putevent("thinking\n", \
@@ -53,6 +70,5 @@ void *ft_routing(void *par)
 		if (ft_die(id, 0) || ft_sleeping(par, &stmp_ref, id))
 			break ;
 	}
-	ft_die(id, 1);
 	return (0);
 }

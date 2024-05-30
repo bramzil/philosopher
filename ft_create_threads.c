@@ -14,12 +14,13 @@
 
 int	ft_create_threads(par_t *par)
 {
-    int         i;
-    pthread_t   t;
+    int             i;
+    pthread_t       t;
 
     i = -1;
     par->forks = NULL;
-    if (ft_intiate_forks(par))
+    par->meals = (long *)malloc(sizeof(long) * par->ph_nb);
+    if (!par->meals || ft_intiate_forks(par))
         return (-1);
     while (++i < par->ph_nb)
 	{
@@ -27,7 +28,7 @@ int	ft_create_threads(par_t *par)
 		    return (printf("thread_creation failure!\n"), -1);
 		if (pthread_detach(t))
 			return (printf("thread_detach failure!\n"), -1);
-        // usleep(10);
+        usleep(1000);
 	}
 	return (0);
 }

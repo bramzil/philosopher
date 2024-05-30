@@ -18,7 +18,12 @@ void ft_free_par(par_t *par)
 
 	i = -1;
 	while (++i < par->ph_nb)
+	{
 		pthread_mutex_destroy(&(par->forks[i]));
+		pthread_mutex_destroy(&(par->meals_mtx[i]));
+	}
+	free(par->meals_mtx);
+	free(par->meals);
 	free(par->forks);
 }
 
@@ -48,30 +53,23 @@ int	ft_putevent(char *msg, long stmp, int id)
 
 int	ft_sleeping(par_t *par, long *ref, int id)
 {
-	if (((*ref + par->t_die) < ft_get_time()) || ft_die(id, 0) || \
-		ft_putevent("sleeping\n", ft_get_time(), id))
+	if (ft_die(id, 0) || ft_putevent("sleeping\n", ft_get_time(), id))
 		return (-1);
 	usleep(par->t_slp * 1000);
-	if ((*ref + par->t_die) < ft_get_time())
-		return (-1);
 	return (0);
 }
 
 int	ft_eating(par_t *par, long *ref, int id)
 {
-	if (((*ref + par->t_die) < ft_get_time()) || ft_die(id, 0) || \
-		ft_lock_mutex(par, par->ph_nb, id))
+	if (ft_die(id, 0) || ft_lock_mutex(par, par->ph_nb, id))
 		return (-1);
-	if (((*ref + par->t_die) < ft_get_time()) || ft_die(id, 0) || \
-		ft_putevent("has take fork\n", ft_get_time(), id))
+	if (ft_die(id, 0) || ft_putevent("has take fork\n", ft_get_time(), id))
 		return (-1);
-	if (((*ref + par->t_die) < ft_get_time()) || ft_die(id, 0) || \
-		ft_putevent("eating\n", ft_get_time(), id))
+	if (ft_die(id, 0) || ft_putevent("eating\n", ft_get_time(), id))
 		return (-1);
 	usleep(par->t_teat * 1000);
-	*ref = ft_get_time();
-	if (((*ref + par->t_die) < ft_get_time()) || ft_die(id, 0) || \
-		ft_unlock_mutex(par, par->ph_nb, id))
+	ft_meal(par, ft_get_time(), id);
+	if (ft_die(id, 0) || ft_unlock_mutex(par, par->ph_nb, id))
 		return (-1);
 	return (0);
 }

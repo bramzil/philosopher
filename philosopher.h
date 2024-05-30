@@ -36,7 +36,9 @@ typedef struct		par_s
 	long			t_die;
 	long			t_slp;
 	long			t_teat;
+	long			*meals;
 	pthread_mutex_t	*forks;
+	pthread_mutex_t	*meals_mtx;
 }                   par_t;
 
 //**************************** function prototypes ****************************//
@@ -46,12 +48,13 @@ int 	ft_lock_mutex(par_t *par, int ph_nb, int id);
 int 	ft_sleeping(par_t *par, long *ref, int id);
 int		ft_putevent(char *msg, long stmp, int id);
 int		ft_eating(par_t *par, long *ref, int id);
+long	ft_meal(par_t *par, long value, int id);
 int		ft_create_threads(par_t *par);
 int		ft_puterr(char *msg, int id);
 int 	ft_intiate_forks(par_t *par);
 void	 ft_free_par(par_t *par);
 int		ft_die(int id, int set);
 void 	*ft_routing(void *par);
-long	ft_get_time();
+long	ft_get_time(void);
 
 #endif
