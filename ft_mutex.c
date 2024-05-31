@@ -6,28 +6,23 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:42:51 by bramzil           #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/05/31 04:41:56 by bramzil          ###   ########.fr       */
-=======
-/*   Updated: 2024/05/31 04:02:07 by bramzil          ###   ########.fr       */
->>>>>>> 650db68d7e62ec1ab44e4bc630bb818d5023999e
+/*   Updated: 2024/05/31 05:06:53 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher.h"
 
-void	ft_usleep(long vl)
+void	ft_usleep(long time)
 {
-	int				i;
-	int				nbr;
-	int				rst;
-
-	i = -1;
-	rst = (int)(vl % 100);
-	nbr = (int)((vl - rst) / 100);
-	while (++i < nbr - 1)
-		usleep(78);
-	usleep(rst);
+	long			t;
+	
+	t = ft_get_time();
+	while (1)
+	{
+		if (time <= (ft_get_time() - t))
+			break ;
+		usleep(500);
+	}
 }
 
 int	ft_die(int id, int set)
