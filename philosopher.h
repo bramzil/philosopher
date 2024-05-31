@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:43:22 by bramzil           #+#    #+#             */
-/*   Updated: 2024/05/28 15:55:25 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/05/31 03:33:05 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef struct		par_s
 	int				ph_nb;
 	long			t_die;
 	long			t_slp;
-	long			t_teat;
+	long			t_eat;
 	long			*meals;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	*meals_mtx;
@@ -45,16 +45,15 @@ typedef struct		par_s
 
 int 	ft_unlock_mutex(par_t *par, int ph_nb, int id);
 int 	ft_lock_mutex(par_t *par, int ph_nb, int id);
+long	ft_last_meal(par_t *par, long value, int id);
 int 	ft_sleeping(par_t *par, long *ref, int id);
-int		ft_putevent(char *msg, long stmp, int id);
 int		ft_eating(par_t *par, long *ref, int id);
-long	ft_meal(par_t *par, long value, int id);
 int		ft_create_threads(par_t *par);
-int		ft_puterr(char *msg, int id);
 int 	ft_intiate_forks(par_t *par);
-void	 ft_free_par(par_t *par);
+void	ft_free_par(par_t *par);
 int		ft_die(int id, int set);
 void 	*ft_routing(void *par);
+void	ft_usleep(long vl);
 long	ft_get_time(void);
 
 #endif
