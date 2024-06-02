@@ -6,11 +6,25 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:42:41 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/02 12:05:53 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/02 20:25:58 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher.h"
+
+static void ft_spread_forks(par_t *par, thr_t *arr, int i)
+{
+    if ((i + 2) % 2)
+    {
+        arr[i].left_fork = &(par->forks[i]);
+        arr[i].right_fork = &(par->forks[(i + 1) % par->ph_nb]);
+    }
+    else
+    {
+        arr[i].left_fork = &(par->forks[(i + 1) % par->ph_nb]);
+        arr[i].right_fork = &(par->forks[i]);
+    }
+}
 
 static thr_t   *ft_create_arr(par_t *par)
 {
@@ -27,17 +41,9 @@ static thr_t   *ft_create_arr(par_t *par)
         arr[i].ph_nb = par->ph_nb;
         arr[i].t_eat = par->t_eat;
         arr[i].t_slp = par->t_slp;
+        arr[i].start = ft_get_time(0);
         arr[i].meal_mtx = &(par->meals[i]);
-        if ((i + 2) % 2)
-        {
-            arr[i].left_fork = &(par->forks[i]);
-            arr[i].right_fork = &(par->forks[(i + 1) % par->ph_nb]);
-        }
-        else
-        {
-            arr[i].left_fork = &(par->forks[(i + 1) % par->ph_nb]);
-            arr[i].right_fork = &(par->forks[i]);
-        } 
+        ft_spread_forks(par, arr, i);
     }
     return (arr);
 }
@@ -53,10 +59,12 @@ int	ft_create_threads(par_t *par)
     par->thrds= ft_create_arr(par);
     while (par->thrds && (++i < par->ph_nb))
 	{
-		if (pthread_create(&t, NULL, ft_routing, (void *)(&(par->thrds[i]))))
+		if (pthread_create(&t, NULL, ft_routing, \
+            (void *)(&(par->thrds[i]))))
 		    return (printf("thread_creation failure!\n"), -1);
 		if (pthread_detach(t))
 			return (printf("thread_detach failure!\n"), -1);
+        usleep (100);
 	}
 	return (0);
 }

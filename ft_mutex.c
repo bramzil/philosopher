@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:42:51 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/02 12:03:53 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/02 20:20:10 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,33 +16,33 @@ void	ft_usleep(long time)
 {
 	long			t;
 	
-	t = ft_get_time();
+	t = ft_get_time(0);
 	while (1)
 	{
-		if (time <= (ft_get_time() - t))
+		if (time <= (ft_get_time(0) - t))
 			break ;
-		usleep(50);
+		usleep(10);
 	}
 }
 
 int ft_lock_mutex(thr_t *thrd)
 {
-	if (!ft_die(0) && pthread_mutex_lock(thrd->left_fork))
+	if (pthread_mutex_lock(thrd->left_fork))
 		return (write(2, "thrd fail to take left fork\n", 29));
-	printf("%-15ld %-10d has take left fork\n", ft_get_time(), thrd->id);
-	if (!ft_die(0) && pthread_mutex_lock(thrd->right_fork))
+	ft_putevent(thrd, "has take left fork\n", thrd->id);
+	if (pthread_mutex_lock(thrd->right_fork))
 		return (write(2, "thrd fail to take right fork\n", 30));
-	printf("%-15ld %-10d has take right fork\n", ft_get_time(), thrd->id);
-	return (0);
+	ft_putevent(thrd, "has take right fork\n", thrd->id);
+	return (ft_die(0, thrd->id));
 }
 
 int ft_unlock_mutex(thr_t *thrd)
 {
-	if (!ft_die(0) && pthread_mutex_unlock(thrd->right_fork))
+	if (pthread_mutex_unlock(thrd->right_fork))
 		return (write(2, "thrd fail to putdown right fork\n", 33));
-	if (!ft_die(0) && pthread_mutex_unlock(thrd->left_fork))
+	if (pthread_mutex_unlock(thrd->left_fork))
 		return (write(2, "thrd fail to putdown left fork\n", 32));
-	return (0);
+	return (ft_die(0, thrd->id));
 }
 
 int ft_intiate_mutexes(par_t *par)

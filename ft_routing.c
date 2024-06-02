@@ -6,28 +6,20 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:43:00 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/02 12:06:16 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/02 20:23:08 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher.h"
 
-long	ft_get_time()
+long	ft_get_time(long time)
 {
-	long				tmp;
-	struct timeval		stmp;
-	static long			start;
-	static pthread_mutex_t	mtx = PTHREAD_MUTEX_INITIALIZER;
+	long					tmp;
+	struct timeval			stmp;
 
 	gettimeofday(&stmp, NULL);
 	tmp = ((stmp.tv_sec * 1000) + (stmp.tv_usec / 1000));
-	if (pthread_mutex_lock(&mtx))
-		return (write(2, "failure in locking time mtx!\n", 30), -1);
-	if (!start)
-		start = tmp;
-	if (pthread_mutex_unlock(&mtx))
-		return (write(2, "failure in unlocking time mtx!\n", 32), -1);
-	return (tmp - start);
+	return (tmp - time);
 }
 
 long	ft_last_meal(thr_t *thrd, long value)
@@ -53,12 +45,14 @@ void *ft_routing(void *thrd)
 
 	i = -1;
 	l_thrd = ((thr_t*)thrd);
-	if (ft_last_meal(l_thrd, ft_get_time()) < 0)
-		return (ft_die(1), (void*)0);
-	while (!ft_die(0))
+	// l_thrd->start = ft_get_time(0);
+	if (ft_last_meal(l_thrd, ft_get_time(l_thrd->start)) < 0)
+		return (ft_die(1, l_thrd->id), (void*)0);
+	if (((l_thrd->id + 2) % 2) == 0)
+		usleep(50);
+	while (!ft_die(0, l_thrd->id))
 	{
-		printf("%-15ld %-10d thinking\n", \
-			ft_get_time(), l_thrd->id);
+		ft_putevent(l_thrd, "thinking\n", l_thrd->id);
 		if (ft_eating(l_thrd))
 			break ;
 		if (ft_sleeping(l_thrd))
