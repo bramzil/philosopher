@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:43:22 by bramzil           #+#    #+#             */
-/*   Updated: 2024/05/31 03:33:05 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/02 12:05:40 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,44 +16,51 @@
 # include <pthread.h>
 # include <unistd.h>
 # include <string.h>
+# include <limits.h>
 # include <stdlib.h>
 # include <sys/time.h>
 # include <stdio.h>
+# define PH_NB 200
 
-//******************************** priority ***********************************//
+//******************************** thread struct ******************************//
 
-typedef struct      priority_s
+typedef struct 		thr_s
 {
-    
-}                   priority_t;
-
+	int				id;
+	int				t_slp;
+	int				t_eat;
+	int				ph_nb;
+	pthread_mutex_t	*meal_mtx;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
+}					thr_t;
 
 //****************************** define main struct ***************************//
 
 typedef struct		par_s
 {
 	int				ph_nb;
-	long			t_die;
-	long			t_slp;
-	long			t_eat;
-	long			*meals;
+	int				t_die;
+	int				t_slp;
+	int				t_eat;
+	thr_t			*thrds;
+	pthread_mutex_t	*meals;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	*meals_mtx;
 }                   par_t;
 
 //**************************** function prototypes ****************************//
 
-int 	ft_unlock_mutex(par_t *par, int ph_nb, int id);
-int 	ft_lock_mutex(par_t *par, int ph_nb, int id);
-long	ft_last_meal(par_t *par, long value, int id);
-int 	ft_sleeping(par_t *par, long *ref, int id);
-int		ft_eating(par_t *par, long *ref, int id);
+int		ft_parsing(par_t *par, char **av, int ac);
+long	ft_last_meal(thr_t *thrd, long value);
+int 	ft_intiate_mutexes(par_t *par);
 int		ft_create_threads(par_t *par);
-int 	ft_intiate_forks(par_t *par);
-void	ft_free_par(par_t *par);
-int		ft_die(int id, int set);
+int 	ft_unlock_mutex(thr_t *thrd);
+int 	ft_lock_mutex(thr_t *thrd);
+int 	ft_sleeping(thr_t *thrd);
 void 	*ft_routing(void *par);
+int		ft_eating(thr_t *thrd);
 void	ft_usleep(long vl);
 long	ft_get_time(void);
+int		ft_die(int set);
 
 #endif

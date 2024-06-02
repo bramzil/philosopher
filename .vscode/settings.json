@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "__functional_base": "c"
+        "__functional_base": "c",
+        "__locale": "c",
+        "locale": "c"
     }
 }
