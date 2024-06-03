@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 15:53:31 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/02 20:25:17 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/03 02:47:33 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static long	ft_atoi(char *arg)
 	return (sig * rslt);
 }
 
-int	ft_parsing(par_t *par, char **av, int ac)
+int	ft_parsing(glb_t *glb, char **av, int ac)
 	{
 	int				i;
 	long			vl;
@@ -61,10 +61,10 @@ int	ft_parsing(par_t *par, char **av, int ac)
 		vl = ft_atoi(av[i]);
 		if ((vl < 0) || (INT_MAX < vl))
 			return (printf("Error: %s out valid range!", av[i]));
-		((i == 1) && (par->ph_nb = vl));
-		((i == 2) && (par->t_die = vl));
-		((i == 3) && (par->t_eat = vl));
-		((i == 4) && (par->t_slp = vl));
+		((i == 1) && (glb->ph_nb = vl));
+		((i == 2) && (glb->t_die = vl));
+		((i == 3) && (glb->t_eat = vl));
+		((i == 4) && (glb->t_slp = vl));
 	}
 	return (0);
 }
