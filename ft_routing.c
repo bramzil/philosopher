@@ -6,11 +6,27 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:43:00 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/03 04:29:30 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/04 10:56:09 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher.h"
+
+int		ft_wait(int set)
+{
+	int						tmp;
+	static int				wait;
+	static pthread_mutex_t	mtx = PTHREAD_MUTEX_INITIALIZER;
+
+	if (pthread_mutex_lock(&mtx))
+		return (write(1, "thrd fail to lock wait mtx!\n", 29), -1);
+	if (set)
+		wait = 1;
+	tmp = wait;
+	if (pthread_mutex_unlock(&mtx))
+		return (write(1, "thrd fail to unlock wait mtx!\n", 31), -1);
+	return (tmp);
+}
 
 long	ft_get_time(long time)
 {
@@ -45,7 +61,10 @@ void *ft_routing(void *thrd)
 
 	i = -1;
 	l_thrd = ((thr_t*)thrd);
-	usleep(50 * (l_thrd->id + 2) % 2);
+	if (ft_last_meal(l_thrd, l_thrd->glb->start) < 0)
+		return (ft_update_die(l_thrd), (void*)0);
+	if ((l_thrd->id + 2) % 2)
+		ft_usleep(l_thrd->glb->t_eat - 10);
 	while (!ft_die(l_thrd))
 	{
 		if (ft_putevent(l_thrd, "thinking\n"))

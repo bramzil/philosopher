@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:43:22 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/03 03:23:20 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/04 10:42:40 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 
 typedef struct 		glb_s
 {
+	int				*die;
 	int				ph_nb;
 	int				t_die;
 	int				t_slp;
@@ -42,7 +43,6 @@ typedef struct 		glb_s
 typedef struct 		thr_s
 {
 	int				id;
-	int				die;
 	glb_t			*glb;
 }					thr_t;
 
@@ -62,5 +62,6 @@ void 	*ft_routing(void *par);
 int		ft_eating(thr_t *thrd);
 int		ft_die(thr_t *thrd);
 void	ft_usleep(long vl);
+int		ft_wait(int set);
 
 #endif
