@@ -6,31 +6,43 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:42:41 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/04 10:38:12 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/04 23:01:13 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher.h"
 
-int	ft_create_threads(thr_t *thrds, glb_t *glb)
-{
-    int             i;
-    pthread_t       t;
 
-    i = 0;
-    glb->start = ft_get_time(0);
-    if (ft_intiate_mutexes(glb))
-        return (-1);
-    while (thrds && (i < glb->ph_nb))
-	{
-        glb->die[i] = 0;
+static void ft_initiate_data(thr_t *thrds, glb_t *glb)
+{
+    int         i;
+
+    i = -1;
+    while (++i < glb->ph_nb)
+    {
+        thrds[i].die = 0;
         thrds[i].glb = glb;
         thrds[i].id = i + 1;
-		if (pthread_create(&t, NULL, ft_routing, \
-            (void *)(&(thrds[i]))))
-		    return (printf("thread_creation failure!\n"), -1);
-		if (pthread_detach(t))
-			return (printf("thread_detach failure!\n"), -1);
+    }
+}
+
+int	ft_create_threads(thr_t **thrds, glb_t *glb)
+{
+    int             i;
+
+    i = 0;
+    *thrds = malloc(sizeof(thr_t) * glb->ph_nb);
+    if (!(*thrds))
+        return (write(2, "thrds array's allocation fails\n", 32), -1);
+    if (ft_intiate_mutexes(*thrds, glb->ph_nb))
+        return (-1);
+    ft_initiate_data(*thrds, glb);
+    glb->start = ft_get_time(0);
+    while (thrds && (i < glb->ph_nb))
+	{
+        if (pthread_create(&((*thrds)[i].thd), NULL, ft_routing, \
+            (void *)(&((*thrds)[i]))))
+		    return (write(2, "thread_creation failure!\n", 26), -1);
         i++;
 	}
 	return (0);
