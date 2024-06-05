@@ -6,34 +6,28 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:42:28 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/05 08:56:34 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/05 10:42:34 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher.h"
 
-// void ft_destroy_mutexes(glb_t *glb)
-// {
-// 	int			i;
-
-// 	i = -1;
-// 	while (++i < glb->ph_nb)
-// 	{
-// 		pthread_mutex_destroy(&(glb->d_mtx[i]));
-// 		pthread_mutex_destroy(&(glb->forks[i]));
-// 		pthread_mutex_destroy(&(glb->meals_mtx[i]));
-// 	}
-// }
-
-int	ft_sleeping(thr_t *thrd)
+int	ft_die(int set)
 {
-	if (ft_last_meal(thrd, ft_get_time(thrd->glb->start)) < 0)
-		return (-1);
-	if (ft_putevent(thrd, "sleeping\n"))
-		return (-1);
-	ft_usleep(thrd->glb->t_slp);
-	return (0);
+	int						tmp;
+	static int				die;
+	static pthread_mutex_t	mtx = PTHREAD_MUTEX_INITIALIZER;
+	
+	if (pthread_mutex_lock(&mtx))
+		return (printf("fials to lock die mtx\n"));
+	if (set)
+		die = 1;
+	tmp = die;
+	if (pthread_mutex_unlock(&mtx))
+		return (printf("fials to unlock die mtx\n"));
+	return (tmp);
 }
+
 int	ft_putevent(thr_t *thrd, char *des)
 {
 	static pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
@@ -49,7 +43,7 @@ int	ft_putevent(thr_t *thrd, char *des)
 	return (0);
 }
 
-int	ft_eating(thr_t  *thrd)
+int	ft_cycle(thr_t  *thrd)
 {
 	if (ft_putevent(thrd, "thinking\n"))
 		return (-1);
@@ -60,10 +54,10 @@ int	ft_eating(thr_t  *thrd)
 	ft_usleep(thrd->glb->t_eat);
 	if (ft_last_meal(thrd, ft_get_time(thrd->glb->start)) < 0)
 		return (-1);
+	if (ft_unlock_mutex(thrd) < 0)
+		return (-1);
 	if (ft_putevent(thrd, "sleeping\n"))
 		return (-1);
 	ft_usleep(thrd->glb->t_slp);
-	if (ft_unlock_mutex(thrd) < 0)
-		return (-1);
 	return (0);
 }

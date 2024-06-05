@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:43:22 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/05 08:26:03 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/05 10:42:22 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ typedef struct 		glb_s
 {
 	int				*die;
 	int				ph_nb;
-	int				t_die;
-	int				t_slp;
-	int				t_eat;
+	long			t_die;
+	long			t_eat;
+	long			t_slp;
+	long			meals;
 	long			start;
-	int				meals;
 }					glb_t;
 
 //******************************** thread struct ******************************//
@@ -58,10 +58,9 @@ long	ft_last_meal(thr_t *thrd, long value);
 int		ft_putevent(thr_t *thrd, char *des);
 int 	ft_unlock_mutex(thr_t *thrd);
 int 	ft_lock_mutex(thr_t *thrd);
-int 	ft_sleeping(thr_t *thrd);
 long	ft_get_time(long time);
 void 	*ft_routing(void *par);
-int		ft_eating(thr_t *thrd);
+int		ft_cycle(thr_t *thrd);
 void	ft_usleep(long vl);
 int		ft_wait(int set);
 int		ft_die(int set);

@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 15:53:31 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/05 08:58:48 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/05 10:35:22 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,8 @@ int	ft_parsing(glb_t *glb, char **av, int ac)
 			return (write(2, "Error: a nbr out valid range!\n", 31));
 		if ((i == 1) && (200 < vl))
 			return (write(2, "Error: thrds nbr is too bigger!\n", 33));
-		((i == 1) && (glb->ph_nb = vl));
-		((i == 2) && (glb->t_die = vl));
-		((i == 3) && (glb->t_eat = vl));
-		((i == 4) && (glb->t_slp = vl));
+		(((i == 1) && (glb->ph_nb = vl)), ((i == 2) && (glb->t_die = vl)));
+		(((i == 3) && (glb->t_eat = vl)), ((i == 4) && (glb->t_slp = vl)));
 		((i == 5) && (glb->meals = vl));
 	}
 	return (0);

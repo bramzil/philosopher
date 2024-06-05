@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:42:41 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/05 09:06:09 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/05 10:33:13 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ static void ft_initiate_data(thr_t *thrds, glb_t *glb)
     while (++i < glb->ph_nb)
     {
         thrds[i].die = 0;
+        thrds[i].meal = 0;
         thrds[i].glb = glb;
         thrds[i].id = i + 1;
     }
