@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:42:41 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/04 23:01:13 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/05 09:06:09 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ int	ft_create_threads(thr_t **thrds, glb_t *glb)
         if (pthread_create(&((*thrds)[i].thd), NULL, ft_routing, \
             (void *)(&((*thrds)[i]))))
 		    return (write(2, "thread_creation failure!\n", 26), -1);
+        if (pthread_detach((*thrds)[i].thd))
+            return (write(2, "thread_detach failure!\n", 26), -1);
         i++;
 	}
 	return (0);

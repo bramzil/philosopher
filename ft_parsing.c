@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 15:53:31 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/03 02:47:33 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/05 08:58:48 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,12 @@ static long	ft_atoi(char *arg)
 	rslt = 0;
 	if (!arg)
 		return (0);
-	else if ((*arg == '-') && arg++)
-		sig = -1;
+	else if ((*arg == '-') || (*arg == '+'))
+	{
+		if (*arg == '-')
+			sig = -1;
+		arg++;
+	}
 	while (arg && *arg)
 	{
 		rslt = rslt * 10 + (*arg - 48);
@@ -54,17 +58,23 @@ int	ft_parsing(glb_t *glb, char **av, int ac)
 	long			vl;
 
 	i = 0;
+	glb->meals = -1;
+	if ((ac < 5) || (6 < ac))
+		return (write(2, "Error: invalid number of args!\n", 32));
 	while ((++i < ac) && av && av[i])
 	{
 		if (ft_is_number(av[i]))
-			return (printf("Error: %s invalid number!", av[i]));
+			return (write(2, "Error: a non numerical arg!\n", 29));
 		vl = ft_atoi(av[i]);
 		if ((vl < 0) || (INT_MAX < vl))
-			return (printf("Error: %s out valid range!", av[i]));
+			return (write(2, "Error: a nbr out valid range!\n", 31));
+		if ((i == 1) && (200 < vl))
+			return (write(2, "Error: thrds nbr is too bigger!\n", 33));
 		((i == 1) && (glb->ph_nb = vl));
 		((i == 2) && (glb->t_die = vl));
 		((i == 3) && (glb->t_eat = vl));
 		((i == 4) && (glb->t_slp = vl));
+		((i == 5) && (glb->meals = vl));
 	}
 	return (0);
 }

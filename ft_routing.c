@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:43:00 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/04 23:03:40 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/05 09:11:34 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ void *ft_routing(void *thrd)
 		return (ft_die(1), (void*)1);
 	if ((l_thrd->id + 2) % 2)
 		ft_usleep((l_thrd->glb->t_eat));
-	while (!ft_die(0))
+	while (!ft_die(0) && (++i != l_thrd->glb->meals))
 		if (ft_eating(l_thrd))
 			break ;
-	return (ft_die(1), (void*)0);
+	return ((void*)0);
 }

@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:42:51 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/04 23:01:30 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/05 09:16:32 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int ft_intiate_mutexes(thr_t *thrds, int ph_nb)
 		if (pthread_mutex_init(&thrds[i].left_fork, NULL) || \
 			pthread_mutex_init(&thrds[i].meal_mtx, NULL))
 			return (write(2, "issue in intiate of mtx!\n", 26));
-		thrds[i].right_fork = &thrds[(i + 1) % ph_nb].left_fork;
+		thrds[i].right_fork = &(thrds[(i + 1) % ph_nb].left_fork);
 		// printf("thrd: %d left_fork add: %p\n", (i + 1), &(thrds[i]).left_fork);
 		// printf("thrd: %d right_fork add: %p\n", (i + 1), thrds[i].right_fork);
 	}

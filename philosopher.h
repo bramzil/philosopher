@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:43:22 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/04 23:00:04 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/05 08:26:03 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,7 @@ typedef struct 		glb_s
 	int				t_slp;
 	int				t_eat;
 	long			start;
-	pthread_mutex_t	*forks;
-	pthread_mutex_t	*d_mtx;
-	pthread_mutex_t	*meals_mtx;
+	int				meals;
 }					glb_t;
 
 //******************************** thread struct ******************************//
