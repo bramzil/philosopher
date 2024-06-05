@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 15:53:31 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/05 10:35:22 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/05 11:40:26 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	ft_is_number(char *arg)
 	i = -1;
 	if (!arg)
 		return (-1);
-	else if (arg[0] == '-')
+	else if ((arg[0] == '-') || (arg[0] == '+'))
 		i += 1;
 	while (arg && arg[++i])
 		if ((arg[i] < '0') || ('9' < arg[i]))
@@ -53,23 +53,23 @@ static long	ft_atoi(char *arg)
 }
 
 int	ft_parsing(glb_t *glb, char **av, int ac)
-	{
+{
 	int				i;
 	long			vl;
 
 	i = 0;
 	glb->meals = -1;
 	if ((ac < 5) || (6 < ac))
-		return (write(2, "Error: invalid number of args!\n", 32));
+		return (write(2, "Error: Invalid number of arguments!!!!!\n", 37));
 	while ((++i < ac) && av && av[i])
 	{
 		if (ft_is_number(av[i]))
-			return (write(2, "Error: a non numerical arg!\n", 29));
+			return (write(2, "Error: A non numerical argument!!!!\n", 34));
 		vl = ft_atoi(av[i]);
 		if ((vl < 0) || (INT_MAX < vl))
-			return (write(2, "Error: a nbr out valid range!\n", 31));
+			return (write(2, "Error: A number out valid range!!!!\n", 34));
 		if ((i == 1) && (200 < vl))
-			return (write(2, "Error: thrds nbr is too bigger!\n", 33));
+			return (write(2, "Error: Thrds nmbr is too bigger!!!!\n", 34));
 		(((i == 1) && (glb->ph_nb = vl)), ((i == 2) && (glb->t_die = vl)));
 		(((i == 3) && (glb->t_eat = vl)), ((i == 4) && (glb->t_slp = vl)));
 		((i == 5) && (glb->meals = vl));

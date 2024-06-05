@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:43:22 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/05 10:42:22 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/05 11:53:08 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,23 +16,21 @@
 # include <pthread.h>
 # include <unistd.h>
 # include <string.h>
+# include <stdio.h>
 # include <limits.h>
 # include <stdlib.h>
 # include <sys/time.h>
-# include <stdio.h>
-# define PH_NB 200
 
 //******************************* shared data *********************************//
 
 typedef struct 		glb_s
 {
-	int				*die;
 	int				ph_nb;
 	long			t_die;
 	long			t_eat;
 	long			t_slp;
 	long			meals;
-	long			start;
+	// long			start;
 }					glb_t;
 
 //******************************** thread struct ******************************//
@@ -40,10 +38,10 @@ typedef struct 		glb_s
 typedef struct 		thr_s
 {
 	int				id;
-	int				die;
 	pthread_t		thd;
 	glb_t			*glb;
 	long			meal;
+	long			start;
 	pthread_mutex_t	meal_mtx;
 	pthread_mutex_t	left_fork;
 	pthread_mutex_t	*right_fork;
@@ -63,6 +61,5 @@ void 	*ft_routing(void *par);
 int		ft_cycle(thr_t *thrd);
 void	ft_usleep(long vl);
 int		ft_wait(int set);
-int		ft_die(int set);
 
 #endif
