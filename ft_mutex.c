@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:42:51 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/06 10:49:23 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/06 18:39:26 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,12 @@ int ft_intiate_mutexes(thr_t *thrds, int ph_nb)
 	while (++i  < ph_nb)
 	{
 		if (pthread_mutex_init(&(thrds[i].left_fork), NULL) || \
-			pthread_mutex_init(&(thrds[i].meal_mtx), NULL))
+			pthread_mutex_init(&(thrds[i].meal_mtx), NULL) || \
+			pthread_mutex_init(&((thrds[i]).meal_nbr_mtx), NULL))
 			return (write(2, "issue in intiate of mtx!\n", 26));
 		thrds[i].right_fork = &(thrds[(i + 1) % ph_nb].left_fork);
 	}
-	if (pthread_mutex_init(&((thrds[0]).glb->prnt_mtx), NULL) || \
-		pthread_mutex_init(&((thrds[0]).meal_nbr_mtx), NULL))
+	if (pthread_mutex_init(&((thrds[0]).glb->prnt_mtx), NULL))
 		return (write(2, "issue in intiate of mtx!\n", 26));
 	return (0);
 }
