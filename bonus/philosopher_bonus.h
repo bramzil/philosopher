@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:43:22 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/11 17:00:03 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/11 18:00:22 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,12 @@
 
 typedef struct 		glb_s
 {
-	int				die;
 	int				ph_nb;
 	long			t_die;
 	long			t_eat;
 	long			t_slp;
 	long			start;
 	int				meals_nbr;
-	sem_t			*die_smphr;
 	sem_t			*msg_smphr;
 	sem_t			*prnt_smphr;
 	sem_t			*forks_smphr;
@@ -53,8 +51,10 @@ typedef struct 		ph_s
 	long			meal;
 	long			start;
 	int				meals_nbr;
+	sem_t			*die_smphr;
 	sem_t			*meal_smphr;
 	sem_t			*meal_nbr_smphr;
+	char			*die_sem_name;
 	char			*meal_sem_name;
 	char			*meal_nbr_sem_name;
 }					ph_t;
@@ -70,10 +70,10 @@ long	ft_last_meal(ph_t *phl, long value);
 int		ft_putevent(ph_t *phl, char *des);
 char 	*ft_generate_name(char *s1, int id);
 int		ft_meals(ph_t *phl, int incr);
-void	ft_usleep(glb_t *glb, long vl);
+void	ft_usleep(ph_t *phl, long vl);
 int 	ft_child_function(ph_t *phl);
 int 	ft_unlock_smphr(ph_t *phl);
-int		ft_die(glb_t *glb, int set);
+int		ft_die(ph_t *phl, int set);
 int 	ft_lock_smphr(ph_t *phl);
 int		ft_sleeping(ph_t  *phl);
 int		ft_thinking(ph_t  *phl);

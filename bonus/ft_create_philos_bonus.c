@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:42:41 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/11 16:59:50 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/11 19:20:11 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ static int ft_initiate_data(ph_t *phls, glb_t *glb)
     int         i;
 
     i = -1;
-    glb->die = 0;
     while (++i < glb->ph_nb)
     {
         phls[i].meals_nbr = 0;
@@ -46,6 +45,10 @@ static int ft_initiate_data(ph_t *phls, glb_t *glb)
             ft_generate_name("meal_nbr_sem_", (i + 1));
          if (!phls[i].meal_nbr_sem_name)
             return (ft_free_names(phls, (i + 1), 1), -1);
+        phls[i].die_sem_name = \
+            ft_generate_name("die_sem_", (i + 1));
+         if (!phls[i].die_sem_name)
+            return (ft_free_names(phls, (i + 1), 2), -1);
     }
     return (ft_initiate_semaphores(phls, glb));
 }
@@ -61,10 +64,10 @@ int	ft_create_philos(ph_t **phls, glb_t *glb)
     if (ft_initiate_data((*phls), glb))
         return (free(*phls), -1);
     glb->start = ft_get_time(0);
-    while (phls && (i < glb->ph_nb))
+    while ((*phls) && (i < glb->ph_nb))
 	{
        (*phls)[i].pid = fork();
-        if (((*phls)[i].pid == -1) && ft_die((*phls)[i].glb, 1))
+        if (((*phls)[i].pid == -1) && ft_die(&(*phls)[i], 1))
             return (write(2, "fork fails!\n", 13), -1);
        (*phls)[i].start = ft_get_time(0);
         if ((*phls)[i].pid == 0)

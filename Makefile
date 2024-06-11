@@ -35,7 +35,7 @@ SRCS_BONUS              =	$(BONUS)/main_bonus.c \
 
 OBJS_BONUS              =	$(SRCS_BONUS:%c=%o)
 
-FLAGS                   =	-Wall -Wextra -Werror -g -fsanitize=thread
+FLAGS                   =	-Wall -Wextra -Werror -g -fsanitize=address
 
 NAME                    =	philo
 

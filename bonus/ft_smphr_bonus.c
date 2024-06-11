@@ -6,19 +6,19 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:42:51 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/11 16:42:03 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/11 19:05:57 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher_bonus.h"
 
-void	ft_usleep(glb_t *glb, long time)
+void	ft_usleep(ph_t *phl, long time)
 {
 	long			start;
 	
 	start = ft_get_time(0);
 	while (((ft_get_time(0) - start) < time) && \
-		!ft_die(glb, 0))
+		!ft_die(phl, 0))
 		usleep(100);
 }
 
