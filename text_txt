@@ -1,0 +1,10 @@
+0               1          thinking
+0               1          has take left fork
+0               1          has take right fork
+0               1          eating
+200             1          sleeping
+200             2          thinking
+200             2          has take left fork
+200             2          has take right fork
+200             2          eating
+400             2          sleeping

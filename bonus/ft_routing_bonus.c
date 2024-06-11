@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:43:00 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/09 15:35:44 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/11 16:51:33 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,74 +22,58 @@ long	ft_get_time(long time)
 	return (tmp - time);
 }
 
-long	ft_last_meal(thr_t *thrd, long value)
+long	ft_last_meal(ph_t *phl, long value)
 {
 	long	tmp;
 	
-	if (sem_wait(thrd->meal_smphr))
-		return (-1);
+	sem_wait(phl->meal_smphr);
 	if (0 <= value)
-		thrd->meal = value;
-	tmp = thrd->meal;
-	if (sem_post(thrd->meal_smphr))
-		return (-1);
+		phl->meal = value;
+	tmp = phl->meal;
+	sem_post(phl->meal_smphr);
 	return (tmp);
 }
 
-static void	*ft_check_die(void *thrd)
+static void	*ft_monitor(void *phl)
 {
-	thr_t		*l_thrd;
+	ph_t			*l_phl;
 
-	l_thrd = (thr_t*)thrd;
-	sem_wait(l_thrd->glb->syn_die_smphr);
-	ft_die(l_thrd->glb, 1);
-	sem_post(l_thrd->glb->syn_die_smphr);
+	l_phl = (ph_t*)phl;
+	while (!ft_die(l_phl->glb, 0) && \
+		(ft_meals(l_phl, 0) != l_phl->glb->meals_nbr))
+	{
+		if (ft_last_meal(l_phl, -1) + l_phl->glb->t_die <= \
+			ft_get_time(l_phl->glb->start))
+		{
+			ft_putevent(l_phl, "is died\n");
+			ft_die(l_phl->glb, 1);
+		}
+	}
+	sem_post(l_phl->glb->msg_smphr);
 	return (0);
 }
 
-static void	ft_simulation(thr_t *thrd)
+int	ft_child_function(ph_t *phl)
 {
-	pthread_t		thd;
-
-	if (pthread_create(&thd, NULL, \
-		ft_check_die, (void*)thrd)|| pthread_detach(thd))
-		exit(1);
-	if (sem_wait(thrd->syn_smphr))
-	if (!((thrd->id + 2) % 2))
-		ft_usleep(thrd->glb, thrd->glb->t_eat);
-	while (thrd->glb->meals_nbr && !ft_die(thrd->glb, 0) &&\
-		(thrd->meals_nbr != thrd->glb->meals_nbr))
+	pthread_t		thr;
+	
+	if (ft_last_meal(phl, \
+		ft_get_time(phl->start)) < 0)
+		return (-1);
+	if (pthread_create(&thr, NULL, ft_monitor, (void*)phl))
+		return (write(2, "pthread_create fails\n", 21), \
+			ft_die(phl->glb, 1));
+	else
 	{
-		if (ft_thinking(thrd) || \
-			ft_eating(thrd) || \
-			ft_sleeping(thrd))
-			break ;
+		if (!(phl->id % 2))
+			ft_usleep(phl->glb, phl->glb->t_eat);
+		while (ft_meals(phl, 0) != phl->glb->meals_nbr)
+		{
+			if (ft_thinking(phl) ||
+				ft_eating(phl) ||
+				ft_sleeping(phl))
+				break ;
+		}
 	}
-	sem_post(thrd->syn_smphr);
-	exit(0);
-}
-
-void *ft_routing(void *thrd)
-{
-	thr_t			*l_thrd;
-
-	l_thrd = ((thr_t*)thrd);
-	if (ft_last_meal(l_thrd, \
-		ft_get_time(l_thrd->glb->start)) < 0)
-		return ((void*)-1);
-	l_thrd->pid = fork();
-	if ((l_thrd->pid == -1) && ft_die(l_thrd->glb, 1))
-		return (write(2, "fork fails!\n", 13), (void*)0);
-	if (l_thrd->pid == 0)
-		ft_simulation(l_thrd);
-	while (!ft_die(l_thrd->glb, 0) && \
-		(ft_meals(l_thrd, 0) != l_thrd->glb->meals_nbr))
-	{
-		sem_wait(l_thrd->syn_smphr);
-		ft_last_meal(l_thrd, ft_get_time(l_thrd->glb->start));
-		ft_meals(l_thrd, 1);
-		sem_post(l_thrd->syn_smphr);
-	}
-	kill(l_thrd->pid, 2);
-	return ((void*)0);
+	return (exit(0), 0);
 }

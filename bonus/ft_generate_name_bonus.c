@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 18:56:19 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/09 12:12:09 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/11 16:40:05 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,17 @@ static int ft_char_nbr(char *s, unsigned int id)
     return (i);
 }
 
-int	ft_free_names(thr_t *thrds, int last, int flg)
+int	ft_free_names(ph_t *phls, int last, int flg)
 {
 	int				i;
 
 	i = -1;
-	while (thrds && (++i < last))
+	while (phls && (++i < last))
 	{
 		if (((i + 1) != last) || (0 < flg))
-			free(thrds[i].meal_sem_name);
+			free(phls[i].meal_sem_name);
 		if (((i + 1) != last) || (1 <= flg))
-			free(thrds[i].meal_nbr_sem_name);
-		if (((i + 1) != last) || (2 <= flg))
-			free(thrds[i].syn_sem_name);
+			free(phls[i].meal_nbr_sem_name);
 	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/31 15:53:31 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/08 10:32:07 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/11 16:40:05 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	ft_parsing(glb_t *glb, char **av, int ac)
 		if ((vl < 0) || (INT_MAX < vl))
 			return (write(2, "Error: A number out valid range!!!!\n", 34));
 		if ((i == 1) && (vl < 1 || 200 < vl))
-			return (write(2, "Error: Invalid numbre of thrds!!!!!\n", 37));
+			return (write(2, "Error: Invalid numbre of phls!!!!!\n", 37));
 		(((i == 1) && (glb->ph_nb = vl)), ((i == 2) && (glb->t_die = vl)));
 		(((i == 3) && (glb->t_eat = vl)), ((i == 4) && (glb->t_slp = vl)));
 		((i == 5) && (glb->meals_nbr = vl));

@@ -24,7 +24,7 @@ BONUS 					=	./bonus
 
 SRCS_BONUS              =	$(BONUS)/main_bonus.c \
 							$(BONUS)/ft_parsing_bonus.c \
-							$(BONUS)/ft_create_thr_bonus.c \
+							$(BONUS)/ft_create_philos_bonus.c \
 							$(BONUS)/ft_initiate_smphr_bonus.c \
 							$(BONUS)/ft_generate_name_bonus.c \
 							$(BONUS)/ft_routing_bonus.c \
@@ -35,7 +35,7 @@ SRCS_BONUS              =	$(BONUS)/main_bonus.c \
 
 OBJS_BONUS              =	$(SRCS_BONUS:%c=%o)
 
-FLAGS                   =	-Wall -Wextra -Werror #-g -fsanitize=address
+FLAGS                   =	-Wall -Wextra -Werror -g -fsanitize=thread
 
 NAME                    =	philo
 

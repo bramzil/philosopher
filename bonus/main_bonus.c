@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:43:10 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/09 15:37:37 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/11 17:04:52 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,31 +17,56 @@ void f()
 	system("leaks	philo_bonus");
 }
 
+static void	*ft_catch_msg(void *glb)
+{
+	int			i;
+	glb_t		*l_glb;
+
+	i = 0;
+	l_glb = (glb_t*)glb;
+	while (i < (l_glb->ph_nb * l_glb->meals_nbr))
+	{
+		sem_wait(l_glb->msg_smphr);
+		i++;
+	}
+	sem_post(l_glb->syn_die_smphr);
+	return (0);
+}
+
+static int ft_are_finished(glb_t *glb)
+{
+	int					i;
+	pthread_t			th;
+
+	i = -1;
+	if (0 < glb->meals_nbr)
+	{
+		if (pthread_create(&th, NULL, ft_catch_msg, \
+			(void*)glb) || pthread_detach(th))
+			return (write(2, "pthread_create fails\n", 22), -1);
+	}
+	return (0);
+}
+
+
 int main(int ac, char **av)
 {
 	int					i;
 	glb_t				glb;
-	int					fnsh; 
-	thr_t				*thrds;
+	ph_t				*phls;
 
-	i = 0;
-	fnsh = 0;
+	i = -1;
 	// atexit(f);
-	if (ft_parsing(&glb, av, ac) || ft_threads(&thrds, &glb))
+	if (ft_parsing(&glb, av, ac))
 		return (0);
-	while ((i < glb.ph_nb) && (fnsh < glb.ph_nb))
-	{
-		((i == 0) && (fnsh = 0));
-		if ((ft_last_meal(&(thrds[i]), -1) + \
-			glb.t_die) <= ft_get_time((thrds[i].start)))
-		{
-			ft_putevent(&(thrds[i]), "died\n");
-			break ;
-		}
-		((0 < glb.meals_nbr) && (ft_meals(&(thrds[i]), 0) == \
-			glb.meals_nbr) && fnsh++);
-		((glb.ph_nb != 1) && (i++) && (i = (i % glb.ph_nb)));
-	}
-	return (ft_clean_up(thrds));
+	if (ft_create_philos(&phls, &glb))
+		return (0);
+	ft_are_finished(&glb);
+	sem_wait(glb.syn_die_smphr);
+	while (++i  < phls[0].glb->ph_nb)
+        kill(phls[i].pid, SIGTERM);
+	ft_destroy_smphrs (phls, phls[0].glb->ph_nb, 2);
+	free(phls);
+	return (0);
 }
 

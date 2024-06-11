@@ -6,7 +6,7 @@
 /*   By: bramzil <bramzil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/26 22:42:51 by bramzil           #+#    #+#             */
-/*   Updated: 2024/06/09 15:40:27 by bramzil          ###   ########.fr       */
+/*   Updated: 2024/06/11 16:42:03 by bramzil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,37 +22,31 @@ void	ft_usleep(glb_t *glb, long time)
 		usleep(100);
 }
 
-int ft_lock_smphr(thr_t *thrd)
+int ft_lock_smphr(ph_t *phl)
 {
-	if (sem_wait(thrd->glb->forks_smphr))
-		return (-1);
-	ft_putevent(thrd, "has take left fork\n");
-	if ((thrd->glb->ph_nb == 1) ||  \
-		sem_wait(thrd->glb->forks_smphr))
-		return (-1);
-	ft_putevent(thrd, "has take right fork\n");
+	sem_wait(phl->glb->forks_smphr);
+	ft_putevent(phl, "has take left fork\n");
+	((1 < phl->glb->ph_nb) &&  \
+		sem_wait(phl->glb->forks_smphr));
+	ft_putevent(phl, "has take right fork\n");
 	return (0);
 }
 
-int ft_unlock_smphr(thr_t *thrd)
+int ft_unlock_smphr(ph_t *phl)
 {
-	if (sem_post(thrd->glb->forks_smphr))
-		return (-1);
-	if (sem_post(thrd->glb->forks_smphr))
-		return (-1);
+	sem_post(phl->glb->forks_smphr);
+	sem_post(phl->glb->forks_smphr);
 	return (0);
 }
 
-int	ft_meals(thr_t *thrd, int incr)
+int	ft_meals(ph_t *phl, int incr)
 {
 	int			tmp;
 	
-	if (sem_wait(thrd->meal_nbr_smphr))
-		return (-1);
+	sem_wait(phl->meal_nbr_smphr);
 	if (incr)
-		thrd->meals_nbr += 1;
-	tmp = thrd->meals_nbr;
-	if (sem_post(thrd->meal_nbr_smphr))
-		return (-1);
+		phl->meals_nbr += 1;
+	tmp = phl->meals_nbr;
+	sem_post(phl->meal_nbr_smphr);
 	return (tmp);
 }
